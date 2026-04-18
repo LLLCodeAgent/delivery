@@ -69,7 +69,17 @@ mysql -u root -p < backend/sql/schema.sql
 - Backend: Render/Railway
 - Frontend: Vercel/Netlify
 - Database: Managed MySQL (PlanetScale/Aiven/RDS)
+- Detailed steps: `docs/deployment_guide.md`
 
 
 ## Phase-by-Phase Delivery
 Detailed phase walkthrough is documented in `PHASES.md`.
+
+
+## Testing
+```bash
+cd backend
+npm test
+```
+
+Postman collection: `docs/postman_collection.json`
