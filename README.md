@@ -69,3 +69,7 @@ mysql -u root -p < backend/sql/schema.sql
 - Backend: Render/Railway
 - Frontend: Vercel/Netlify
 - Database: Managed MySQL (PlanetScale/Aiven/RDS)
+
+
+## Phase-by-Phase Delivery
+Detailed phase walkthrough is documented in `PHASES.md`.

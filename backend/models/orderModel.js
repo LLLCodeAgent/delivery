@@ -10,11 +10,20 @@ const createOrder = async (payload) => {
 };
 
 const updateOrder = async (id, payload) => {
-  const { sender, receiver, address, status } = payload;
-  await db.execute(
-    'UPDATE orders SET sender = ?, receiver = ?, address = ?, status = ? WHERE id = ?',
-    [sender, receiver, address, status, id]
-  );
+  const fields = [];
+  const values = [];
+
+  ['sender', 'receiver', 'address', 'status'].forEach((field) => {
+    if (payload[field] !== undefined) {
+      fields.push(`${field} = ?`);
+      values.push(payload[field]);
+    }
+  });
+
+  if (fields.length === 0) return;
+
+  values.push(id);
+  await db.execute(`UPDATE orders SET ${fields.join(', ')} WHERE id = ?`, values);
 };
 
 const deleteOrder = async (id) => {
@@ -32,7 +41,7 @@ const getOrderByTrackingId = async (trackingId) => {
 };
 
 const assignDriver = async (orderId, driverId) => {
-  await db.execute('UPDATE orders SET driver_id = ? WHERE id = ?', [driverId, orderId]);
+  await db.execute('UPDATE orders SET driver_id = ?, status = ? WHERE id = ?', [driverId, 'Out for delivery', orderId]);
 };
 
 module.exports = {

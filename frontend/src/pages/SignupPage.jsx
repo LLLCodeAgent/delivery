@@ -5,11 +5,22 @@ import api from '../services/api';
 function SignupPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'customer' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
-    await api.post('/auth/register', form);
-    navigate('/login');
+    setLoading(true);
+    setError('');
+
+    try {
+      await api.post('/auth/register', form);
+      navigate('/login');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Unable to create account');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,7 +39,8 @@ function SignupPage() {
           <option value="manager">Manager</option>
           <option value="driver">Driver</option>
         </select>
-        <button type="submit">Sign Up</button>
+        {error && <p className="error">{error}</p>}
+        <button type="submit" disabled={loading}>{loading ? 'Creating account...' : 'Sign Up'}</button>
       </form>
       <p>
         Already have an account? <Link to="/login">Login</Link>

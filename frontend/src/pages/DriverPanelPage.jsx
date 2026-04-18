@@ -4,14 +4,25 @@ import api from '../services/api';
 function DriverPanelPage() {
   const [driver, setDriver] = useState({ name: '', phone: '' });
   const [assignment, setAssignment] = useState({ orderId: '', driverId: '' });
+  const [message, setMessage] = useState('');
 
   const addDriver = async () => {
-    await api.post('/drivers', driver);
-    setDriver({ name: '', phone: '' });
+    try {
+      await api.post('/drivers', driver);
+      setDriver({ name: '', phone: '' });
+      setMessage('Driver added successfully');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Could not add driver');
+    }
   };
 
   const assign = async () => {
-    await api.put(`/drivers/assign/${assignment.orderId}`, { driverId: assignment.driverId });
+    try {
+      await api.put(`/drivers/assign/${assignment.orderId}`, { driverId: assignment.driverId });
+      setMessage('Driver assigned successfully');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Could not assign driver');
+    }
   };
 
   return (
@@ -40,6 +51,7 @@ function DriverPanelPage() {
           <button onClick={assign}>Assign</button>
         </section>
       </div>
+      {message && <p className="success">{message}</p>}
     </main>
   );
 }

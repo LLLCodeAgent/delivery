@@ -5,7 +5,7 @@ function TrackingPage() {
   const [trackingId, setTrackingId] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!trackingId || !result) return undefined;
@@ -24,11 +24,14 @@ function TrackingPage() {
   const track = async () => {
     try {
       setError('');
+      setLoading(true);
       const { data } = await api.get(`/tracking/${trackingId}`);
       setResult(data);
-    } catch (_err) {
-      setError('Tracking ID not found');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Tracking ID not found');
       setResult(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,7 +40,7 @@ function TrackingPage() {
       <h2>Track Order</h2>
       <div className="row">
         <input value={trackingId} onChange={(e) => setTrackingId(e.target.value)} placeholder="TRK-..." />
-        <button onClick={track}>Track</button>
+        <button onClick={track} disabled={loading}>{loading ? 'Tracking...' : 'Track'}</button>
       </div>
       {error && <p className="error">{error}</p>}
       {result && (

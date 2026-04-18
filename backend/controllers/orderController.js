@@ -1,9 +1,15 @@
 const orderModel = require('../models/orderModel');
 const trackingModel = require('../models/trackingModel');
 const generateTrackingId = require('../utils/generateTrackingId');
+const { validateOrderPayload } = require('../utils/validators');
 
 const createOrder = async (req, res, next) => {
   try {
+    const validationError = validateOrderPayload(req.body);
+    if (validationError) {
+      return res.status(400).json({ message: validationError });
+    }
+
     const trackingId = generateTrackingId();
     const payload = {
       ...req.body,
@@ -24,10 +30,22 @@ const createOrder = async (req, res, next) => {
 const updateOrder = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const existing = await orderModel.getOrderById(id);
+    if (!existing) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const validationError = validateOrderPayload(req.body, true);
+    if (validationError) {
+      return res.status(400).json({ message: validationError });
+    }
+
     await orderModel.updateOrder(id, req.body);
-    if (req.body.status) {
+
+    if (req.body.status && req.body.status !== existing.status) {
       await trackingModel.createTrackingLog(id, req.body.status);
     }
+
     return res.status(200).json({ message: 'Order updated' });
   } catch (error) {
     return next(error);
@@ -37,6 +55,11 @@ const updateOrder = async (req, res, next) => {
 const deleteOrder = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const existing = await orderModel.getOrderById(id);
+    if (!existing) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
     await orderModel.deleteOrder(id);
     return res.status(200).json({ message: 'Order deleted' });
   } catch (error) {
@@ -51,7 +74,9 @@ const getOrderById = async (req, res, next) => {
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-    return res.status(200).json(order);
+
+    const timeline = await trackingModel.getTrackingTimeline(order.id);
+    return res.status(200).json({ ...order, timeline });
   } catch (error) {
     return next(error);
   }
