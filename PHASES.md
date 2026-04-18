@@ -55,7 +55,8 @@
 - Added command-level checks and syntax validation in current environment.
 
 ## Phase 14: Deployment
-- README includes deployment targets: Render/Railway (backend), Vercel/Netlify (frontend), cloud MySQL.
+- Added Vercel-ready configuration for frontend (`frontend/vercel.json`) and backend serverless deployment (`backend/vercel.json`, `backend/api/index.js`).
+- Added production deployment playbook in `docs/deployment_guide.md` with env variables and rollout checklist.
 
 ## Phase 15: Final Output
 - Repository includes full backend code, full frontend code, SQL schema, chatbot integration, setup steps, and deployment guide.

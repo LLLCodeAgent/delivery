@@ -83,3 +83,11 @@ npm test
 ```
 
 Postman collection: `docs/postman_collection.json`
+
+
+## Vercel Deployment (Production)
+- Frontend: deploy `frontend/` as one Vercel project.
+- Backend: deploy `backend/` as second Vercel project using `backend/vercel.json`.
+- Configure `VITE_API_URL` in frontend to backend `/api` URL.
+- Configure backend `CORS_ORIGINS` to frontend domain.
+
