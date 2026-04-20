@@ -1,6 +1,6 @@
 # Logistics Management System (Backend + Next.js Frontend + AI Chatbot)
 
-Production-ready logistics platform with modular Node/Express backend and **Next.js frontend** optimized for Vercel deployment.
+Production-ready logistics platform with modular Node/Express backend and Next.js frontend.
 
 ## Tech Stack
 - Backend: Node.js, Express, MySQL, JWT, bcrypt
@@ -9,11 +9,13 @@ Production-ready logistics platform with modular Node/Express backend and **Next
 
 ## Project Structure
 ```text
+api/                      # Root Vercel serverless entry (fixes Vercel 404 when deploying repo root)
 backend/
 frontend/
   app/
   components/
   lib/
+vercel.json               # Root monorepo deployment config (frontend + backend)
 docs/
 ```
 
@@ -50,9 +52,18 @@ npm test
 
 Postman collection: `docs/postman_collection.json`
 
-## Vercel Deployment (Production)
-- Deploy `frontend/` as one Vercel project (Next.js).
-- Deploy `backend/` as second Vercel project using `backend/vercel.json`.
-- Set `NEXT_PUBLIC_API_URL=https://<backend-domain>/api` in frontend.
-- Set `CORS_ORIGINS=https://<frontend-domain>` in backend.
-- Full guide: `docs/deployment_guide.md`
+## Vercel Deployment (Fix for `404: NOT_FOUND`)
+### Option A — Recommended (single Vercel project from repo root)
+1. Import repository in Vercel.
+2. Keep **Root Directory = repository root**.
+3. Vercel automatically uses root `vercel.json`:
+   - `frontend/package.json` builds Next.js app
+   - `api/index.js` serves backend Express API
+4. Configure environment variables:
+   - Frontend: `NEXT_PUBLIC_API_URL=/api`
+   - Backend: `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`, `JWT_SECRET`, `CORS_ORIGINS`
+
+### Option B — Two projects
+- Deploy `frontend/` and `backend/` separately as two Vercel projects.
+
+Full guide: `docs/deployment_guide.md`

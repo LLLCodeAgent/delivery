@@ -1,37 +1,36 @@
 # Deployment Guide
 
-## Recommended Production Topology
-- **Frontend**: Vercel (`frontend/` project)
-- **Backend API**: Vercel (`backend/` project) or Render/Railway
-- **Database**: Cloud MySQL (PlanetScale, Aiven, RDS)
+## Why `404: NOT_FOUND` happens on Vercel
+This usually occurs when deploying a monorepo from root without a routing/build config. The platform cannot find a framework entrypoint for `/`.
 
 ---
 
-## Deploy Frontend on Vercel
-1. Import repository in Vercel.
-2. Set **Root Directory** to `frontend`.
-3. Build command: `npm install && npm run build`.
-4. Output directory: `dist`.
-5. Add environment variable:
-   - `NEXT_PUBLIC_API_URL=https://<your-backend-domain>/api`
-6. Deploy.
+## Recommended: Single Vercel Project from Repo Root
+This repository includes root-level `vercel.json` and `api/index.js` to prevent the 404 issue.
 
-`Next.js native routing (no rewrite file required)` already handles SPA rewrites and basic security headers.
-
----
-
-## Deploy Backend on Vercel
-1. Create a second Vercel project using the same repo.
-2. Set **Root Directory** to `backend`.
-3. Keep default build (`@vercel/node`) via `backend/vercel.json`.
-4. Add environment variables:
+### Steps
+1. Import repository into Vercel.
+2. Keep **Root Directory = repo root**.
+3. Deploy (Vercel will use root `vercel.json`).
+4. Set environment variables:
+   - `NEXT_PUBLIC_API_URL=/api`
    - `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`
    - `JWT_SECRET`
    - `OPENAI_API_KEY` (optional)
-   - `CORS_ORIGINS=https://<your-frontend-domain>`
-5. Deploy and test `/api/health`.
+   - `CORS_ORIGINS=https://<your-vercel-domain>`
 
-`backend/vercel.json` routes all requests to the serverless entry `api/index.js`.
+### What root config does
+- Builds Next.js frontend from `frontend/package.json`.
+- Builds serverless backend API from `api/index.js` (which imports `backend/app.js`).
+- Routes `/api/*` to backend function and all other paths to frontend.
+
+---
+
+## Alternative: Two Vercel Projects
+- Frontend project with root `frontend/`
+- Backend project with root `backend/`
+
+Use this only if you prefer split deployments.
 
 ---
 
@@ -41,14 +40,13 @@
    ```bash
    mysql -u <user> -p < backend/sql/schema.sql
    ```
-3. Restrict network access to deployment egress where possible.
-4. Enable backups and connection encryption.
+3. Restrict network access and enable encrypted connections.
 
 ---
 
 ## Production Readiness Checklist
-- Rotate JWT/API keys regularly.
-- Use strong CORS allowlist (no wildcard in production).
-- Monitor 429 rate-limit responses and tune threshold.
-- Add structured logs and centralized observability.
-- Add worker queues for bulk upload and async notifications.
+- Rotate secrets and keys.
+- Restrict CORS to known domains.
+- Monitor 429 rate-limit logs.
+- Add centralized logs/metrics/traces.
+- Move bulk/OTP/payment jobs to async workers.

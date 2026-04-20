@@ -55,7 +55,7 @@
 - Added command-level checks and syntax validation in current environment.
 
 ## Phase 14: Deployment
-- Added Vercel-ready Next.js frontend deployment and backend serverless deployment (`backend/vercel.json`, `backend/api/index.js`).
+- Added Vercel-ready deployment options, including monorepo root deployment (`vercel.json`, `api/index.js`) to prevent platform `404: NOT_FOUND`, plus separate backend deployment support (`backend/vercel.json`).
 - Added production deployment playbook in `docs/deployment_guide.md` with env variables and rollout checklist.
 
 ## Phase 15: Final Output
