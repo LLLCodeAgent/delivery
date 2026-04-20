@@ -10,4 +10,15 @@ const pool = mysql.createPool({
   connectionLimit: 10,
 });
 
+const pingDatabase = async () => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.ping();
+    return true;
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = pool;
+module.exports.pingDatabase = pingDatabase;

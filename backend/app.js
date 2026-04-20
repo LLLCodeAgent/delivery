@@ -12,6 +12,8 @@ const advancedRoutes = require('./routes/advancedRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const { rateLimit } = require('./middleware/rateLimitMiddleware');
 const { securityHeaders } = require('./middleware/securityHeaders');
+const { requestContext } = require('./middleware/requestContext');
+const { pingDatabase } = require('./config/db');
 
 const app = express();
 
@@ -29,12 +31,23 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json({ limit: '1mb' }));
+app.use(requestContext);
 app.use(securityHeaders);
 app.use(rateLimit);
 
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ status: 'ok', service: 'logistics-backend', date: new Date().toISOString() });
+});
+
+app.get('/api/ready', async (req, res) => {
+  try {
+    await pingDatabase();
+    return res.status(200).json({ status: 'ready', requestId: req.requestId });
+  } catch (error) {
+    return res.status(503).json({ status: 'degraded', message: 'Database unavailable', requestId: req.requestId });
+  }
 });
 
 app.use('/api/auth', authRoutes);

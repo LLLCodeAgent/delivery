@@ -52,11 +52,11 @@
 - Added placeholder APIs for live location, OTP, payment intent, and bulk upload flow.
 
 ## Phase 13: Testing
-- Added command-level checks and syntax validation in current environment.
+- Added command-level checks, backend unit tests, and CI workflow for backend test automation.
 
 ## Phase 14: Deployment
 - Added Vercel-ready deployment options, including monorepo root deployment (`vercel.json`, `api/index.js`) to prevent platform `404: NOT_FOUND`, plus separate backend deployment support (`backend/vercel.json`).
-- Added production deployment playbook in `docs/deployment_guide.md` with env variables and rollout checklist.
+- Added deployment playbook with health/readiness verification and production env validation guidance.
 
 ## Phase 15: Final Output
 - Repository includes full backend code, full frontend code, SQL schema, chatbot integration, setup steps, and deployment guide.

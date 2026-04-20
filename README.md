@@ -1,6 +1,6 @@
 # Logistics Management System (Backend + Next.js Frontend + AI Chatbot)
 
-Production-ready logistics platform with modular Node/Express backend and Next.js frontend.
+Production-grade logistics platform with modular Node/Express backend and Next.js frontend.
 
 ## Tech Stack
 - Backend: Node.js, Express, MySQL, JWT, bcrypt
@@ -9,14 +9,15 @@ Production-ready logistics platform with modular Node/Express backend and Next.j
 
 ## Project Structure
 ```text
-api/                      # Root Vercel serverless entry (fixes Vercel 404 when deploying repo root)
+api/                      # Root Vercel serverless entry
 backend/
 frontend/
   app/
   components/
   lib/
-vercel.json               # Root monorepo deployment config (frontend + backend)
+vercel.json               # Root monorepo deployment config
 docs/
+.github/workflows/        # CI pipeline
 ```
 
 ## Local Setup
@@ -41,8 +42,9 @@ npm run dev
 mysql -u root -p < backend/sql/schema.sql
 ```
 
-## API Modules
-- Auth, Orders, Drivers, Tracking, Warehouse, Chatbot, Advanced
+## Health / Readiness
+- Liveness: `GET /api/health`
+- Readiness: `GET /api/ready` (checks DB connectivity)
 
 ## Testing
 ```bash
@@ -52,11 +54,11 @@ npm test
 
 Postman collection: `docs/postman_collection.json`
 
-## Vercel Deployment (Fix for `404: NOT_FOUND`)
+## Vercel Deployment (Production)
 ### Option A — Recommended (single Vercel project from repo root)
 1. Import repository in Vercel.
 2. Keep **Root Directory = repository root**.
-3. Vercel automatically uses root `vercel.json`:
+3. Vercel uses root `vercel.json`:
    - `frontend/package.json` builds Next.js app
    - `api/index.js` serves backend Express API
 4. Configure environment variables:
@@ -67,3 +69,6 @@ Postman collection: `docs/postman_collection.json`
 - Deploy `frontend/` and `backend/` separately as two Vercel projects.
 
 Full guide: `docs/deployment_guide.md`
+
+## CI
+- GitHub Actions workflow runs backend tests on pushes/PRs touching backend files.

@@ -1,36 +1,34 @@
 # Deployment Guide
 
 ## Why `404: NOT_FOUND` happens on Vercel
-This usually occurs when deploying a monorepo from root without a routing/build config. The platform cannot find a framework entrypoint for `/`.
+This usually occurs when deploying a monorepo from root without routing/build config.
 
 ---
 
 ## Recommended: Single Vercel Project from Repo Root
-This repository includes root-level `vercel.json` and `api/index.js` to prevent the 404 issue.
+This repository includes root-level `vercel.json` and `api/index.js`.
 
 ### Steps
 1. Import repository into Vercel.
 2. Keep **Root Directory = repo root**.
-3. Deploy (Vercel will use root `vercel.json`).
+3. Deploy (Vercel uses root `vercel.json`).
 4. Set environment variables:
    - `NEXT_PUBLIC_API_URL=/api`
+   - `NODE_ENV=production`
    - `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`
    - `JWT_SECRET`
    - `OPENAI_API_KEY` (optional)
    - `CORS_ORIGINS=https://<your-vercel-domain>`
 
-### What root config does
-- Builds Next.js frontend from `frontend/package.json`.
-- Builds serverless backend API from `api/index.js` (which imports `backend/app.js`).
-- Routes `/api/*` to backend function and all other paths to frontend.
+### Verification
+- `GET /api/health` should return `ok`.
+- `GET /api/ready` should return `ready` after DB connection works.
 
 ---
 
 ## Alternative: Two Vercel Projects
 - Frontend project with root `frontend/`
 - Backend project with root `backend/`
-
-Use this only if you prefer split deployments.
 
 ---
 
@@ -47,6 +45,7 @@ Use this only if you prefer split deployments.
 ## Production Readiness Checklist
 - Rotate secrets and keys.
 - Restrict CORS to known domains.
+- Validate required env vars (`JWT_SECRET`, DB settings) in production.
 - Monitor 429 rate-limit logs.
 - Add centralized logs/metrics/traces.
 - Move bulk/OTP/payment jobs to async workers.
