@@ -1,23 +1,25 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import api from '../services/api';
+'use client';
 
-function SignupPage() {
-  const navigate = useNavigate();
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import api from '@/lib/api';
+
+export default function SignupPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'customer' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
-
+    setLoading(true);
     try {
       await api.post('/auth/register', form);
-      navigate('/login');
+      router.push('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'Unable to create account');
+      setError(err.response?.data?.message || 'Could not create account');
     } finally {
       setLoading(false);
     }
@@ -29,12 +31,8 @@ function SignupPage() {
       <form onSubmit={submit}>
         <input placeholder="Name" onChange={(e) => setForm({ ...form, name: e.target.value })} />
         <input placeholder="Email" onChange={(e) => setForm({ ...form, email: e.target.value })} />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <select onChange={(e) => setForm({ ...form, role: e.target.value })} value={form.role}>
+        <input type="password" placeholder="Password" onChange={(e) => setForm({ ...form, password: e.target.value })} />
+        <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
           <option value="customer">Customer</option>
           <option value="manager">Manager</option>
           <option value="driver">Driver</option>
@@ -42,11 +40,7 @@ function SignupPage() {
         {error && <p className="error">{error}</p>}
         <button type="submit" disabled={loading}>{loading ? 'Creating account...' : 'Sign Up'}</button>
       </form>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+      <p>Already have account? <Link href="/login">Login</Link></p>
     </main>
   );
 }
-
-export default SignupPage;

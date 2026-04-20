@@ -1,44 +1,33 @@
-# Logistics Management System (Full Stack + AI Chatbot)
+# Logistics Management System (Backend + Next.js Frontend + AI Chatbot)
 
-A production-style logistics platform with modular backend architecture, React frontend, and chatbot support.
+Production-ready logistics platform with modular Node/Express backend and **Next.js frontend** optimized for Vercel deployment.
 
 ## Tech Stack
-- Backend: Node.js, Express, MySQL, JWT Auth, bcrypt
-- Frontend: React, Vite, React Router, Axios
-- AI Layer: Rule-based chatbot endpoint (`POST /api/chatbot`) extensible to OpenAI API
+- Backend: Node.js, Express, MySQL, JWT, bcrypt
+- Frontend: Next.js (App Router), React, Axios
+- AI: Rule-based chatbot with optional OpenAI fallback
 
 ## Project Structure
-
 ```text
 backend/
-  config/
-  controllers/
-  middleware/
-  models/
-  routes/
-  services/
-  sql/
-  utils/
 frontend/
-  src/
-    assets/
-    components/
-    pages/
-    services/
+  app/
+  components/
+  lib/
+docs/
 ```
 
-## Setup
+## Local Setup
 
-### 1) Backend
+### Backend
 ```bash
 cd backend
 npm install
 cp .env.example .env
-# edit .env for MySQL + JWT
 npm run dev
 ```
 
-### 2) Frontend
+### Frontend (Next.js)
 ```bash
 cd frontend
 npm install
@@ -46,35 +35,12 @@ npm run dev
 ```
 
 ## Database
-Run:
 ```bash
 mysql -u root -p < backend/sql/schema.sql
 ```
 
-## API Summary
-- Auth: `/api/auth/register`, `/api/auth/login`
-- Orders: CRUD `/api/orders`
-- Drivers: `/api/drivers`, `/api/drivers/assign/:orderId`, `/api/drivers/status/:orderId`
-- Tracking: `/api/tracking/:trackingId`
-- Warehouse: `/api/warehouse`
-- Chatbot: `/api/chatbot`
-
-## Advanced Features Roadmap
-- Google Maps live tracking integration
-- OTP delivery verification via SMS provider
-- Payment gateway integration
-- B2B CSV bulk upload pipeline
-
-## Deployment
-- Backend: Render/Railway
-- Frontend: Vercel/Netlify
-- Database: Managed MySQL (PlanetScale/Aiven/RDS)
-- Detailed steps: `docs/deployment_guide.md`
-
-
-## Phase-by-Phase Delivery
-Detailed phase walkthrough is documented in `PHASES.md`.
-
+## API Modules
+- Auth, Orders, Drivers, Tracking, Warehouse, Chatbot, Advanced
 
 ## Testing
 ```bash
@@ -84,10 +50,9 @@ npm test
 
 Postman collection: `docs/postman_collection.json`
 
-
 ## Vercel Deployment (Production)
-- Frontend: deploy `frontend/` as one Vercel project.
-- Backend: deploy `backend/` as second Vercel project using `backend/vercel.json`.
-- Configure `VITE_API_URL` in frontend to backend `/api` URL.
-- Configure backend `CORS_ORIGINS` to frontend domain.
-
+- Deploy `frontend/` as one Vercel project (Next.js).
+- Deploy `backend/` as second Vercel project using `backend/vercel.json`.
+- Set `NEXT_PUBLIC_API_URL=https://<backend-domain>/api` in frontend.
+- Set `CORS_ORIGINS=https://<frontend-domain>` in backend.
+- Full guide: `docs/deployment_guide.md`

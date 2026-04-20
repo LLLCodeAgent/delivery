@@ -3,11 +3,11 @@
 ## Phase 1: Project Setup
 - Initialized `frontend/` and `backend/` folders.
 - Backend dependencies include `express`, `mysql`, `cors`, `dotenv`, `bcrypt`, `jsonwebtoken`.
-- Frontend configured as React app with routing and cleaned baseline files.
+- Frontend migrated to Next.js App Router (React-based) with routing and production-ready structure.
 
 ## Phase 2: Project Structure
 - Backend follows: `controllers`, `routes`, `models`, `middleware`, `services`, `config`, `utils`.
-- Frontend follows: `components`, `pages`, `services`, `assets`.
+- Frontend (Next.js) follows: `app`, `components`, `lib`, `public`.
 
 ## Phase 3: Database Design
 - Created MySQL schema (`backend/sql/schema.sql`) for users, orders, drivers, tracking logs, warehouse.
@@ -55,7 +55,7 @@
 - Added command-level checks and syntax validation in current environment.
 
 ## Phase 14: Deployment
-- Added Vercel-ready configuration for frontend (`frontend/vercel.json`) and backend serverless deployment (`backend/vercel.json`, `backend/api/index.js`).
+- Added Vercel-ready Next.js frontend deployment and backend serverless deployment (`backend/vercel.json`, `backend/api/index.js`).
 - Added production deployment playbook in `docs/deployment_guide.md` with env variables and rollout checklist.
 
 ## Phase 15: Final Output

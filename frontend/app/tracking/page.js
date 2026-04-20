@@ -1,34 +1,34 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
+'use client';
 
-function TrackingPage() {
+import { useEffect, useState } from 'react';
+import api from '@/lib/api';
+
+export default function TrackingPage() {
   const [trackingId, setTrackingId] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const fetchTracking = async () => {
+    const { data } = await api.get(`/tracking/${trackingId}`);
+    setResult(data);
+  };
+
   useEffect(() => {
-    if (!trackingId || !result) return undefined;
+    if (!result || !trackingId) return undefined;
     const timer = setInterval(async () => {
-      try {
-        const { data } = await api.get(`/tracking/${trackingId}`);
-        setResult(data);
-      } catch (_err) {
-        // silent polling failure
-      }
+      try { await fetchTracking(); } catch (_err) { /* noop */ }
     }, 15000);
-
     return () => clearInterval(timer);
-  }, [trackingId, result]);
+  }, [result, trackingId]);
 
-  const track = async () => {
+  const onTrack = async () => {
+    setLoading(true);
+    setError('');
     try {
-      setError('');
-      setLoading(true);
-      const { data } = await api.get(`/tracking/${trackingId}`);
-      setResult(data);
+      await fetchTracking();
     } catch (err) {
-      setError(err.response?.data?.message || 'Tracking ID not found');
+      setError(err.response?.data?.message || 'Tracking failed');
       setResult(null);
     } finally {
       setLoading(false);
@@ -37,10 +37,10 @@ function TrackingPage() {
 
   return (
     <main className="page card">
-      <h2>Track Order</h2>
+      <h2>Track Shipment</h2>
       <div className="row">
         <input value={trackingId} onChange={(e) => setTrackingId(e.target.value)} placeholder="TRK-..." />
-        <button onClick={track} disabled={loading}>{loading ? 'Tracking...' : 'Track'}</button>
+        <button onClick={onTrack} disabled={loading}>{loading ? 'Tracking...' : 'Track'}</button>
       </div>
       {error && <p className="error">{error}</p>}
       {result && (
@@ -57,5 +57,3 @@ function TrackingPage() {
     </main>
   );
 }
-
-export default TrackingPage;

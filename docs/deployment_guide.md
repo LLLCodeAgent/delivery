@@ -13,10 +13,10 @@
 3. Build command: `npm install && npm run build`.
 4. Output directory: `dist`.
 5. Add environment variable:
-   - `VITE_API_URL=https://<your-backend-domain>/api`
+   - `NEXT_PUBLIC_API_URL=https://<your-backend-domain>/api`
 6. Deploy.
 
-`frontend/vercel.json` already handles SPA rewrites and basic security headers.
+`Next.js native routing (no rewrite file required)` already handles SPA rewrites and basic security headers.
 
 ---
 
